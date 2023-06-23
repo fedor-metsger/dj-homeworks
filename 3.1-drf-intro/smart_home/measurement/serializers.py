@@ -11,11 +11,12 @@ class SensorListSerializer(serializers.ModelSerializer):
 class MeasurementSerializer(serializers.ModelSerializer):
     class Meta:
         model = Measurement
-        fields = ["temperature", "created_at"]
+        fields = ["temperature", "created_at", "sensor"]
 
-class SensorSerializer(serializers.Serializer):
-    id = serializers.IntegerField()
-    name = serializers.CharField()
-    description = serializers.CharField()
+class SensorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Sensor
+        fields = "__all__"
+
     measurements = MeasurementSerializer(many=True)
 
