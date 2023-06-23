@@ -1,7 +1,12 @@
 from rest_framework import serializers
 
 # TODO: опишите необходимые сериализаторы
-from .models import Measurement
+from .models import Sensor, Measurement
+
+class SensorListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Sensor
+        fields = "__all__"
 
 class MeasurementSerializer(serializers.ModelSerializer):
     class Meta:

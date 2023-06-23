@@ -3,11 +3,12 @@
 from rest_framework.generics import ListAPIView, RetrieveAPIView, UpdateAPIView, CreateAPIView
 
 from .models import Sensor, Measurement
-from .serializers import SensorSerializer, MeasurementSerializer
+from .serializers import SensorSerializer, MeasurementSerializer, SensorListSerializer
+
 
 class SensorListView(ListAPIView):
     queryset = Sensor.objects.all()
-    serializer_class = SensorSerializer
+    serializer_class = SensorListSerializer
 
 class SensorUpdateView(UpdateAPIView):
     queryset = Sensor.objects.all()
