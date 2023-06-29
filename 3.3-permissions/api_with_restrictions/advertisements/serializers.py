@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.db.models import Q
 from rest_framework import serializers
 
 from advertisements.models import Advertisement
@@ -41,9 +42,16 @@ class AdvertisementSerializer(serializers.ModelSerializer):
         """Метод для валидации. Вызывается при создании и обновлении."""
 
         # TODO: добавьте требуемую валидацию
-        usr = self.context["request"].user
-        open_count = Advertisement.objects.filter(creator=usr, status="OPEN").count()
-        if open_count > 9:
-            raise serializers.ValidationError(f'У пользователя "{usr}" не может быть более 10 открытых обьявлений')
+        request = self.context["request"]
+        usr = request.user
+        if request.method == "POST":
+            open_count = Advertisement.objects.filter(creator=usr, status="OPEN").count()
+            if open_count >= 10:
+                raise serializers.ValidationError(f'У пользователя "{usr}" не может быть более 10 открытых обьявлений')
+        elif request.method in {"PUT", "PATCH"}:
+            id = self.instance.id
+            open_count = Advertisement.objects.filter(creator=usr, status="OPEN").filter(~Q(id=id)).count()
+            if open_count >= 10 and data.get("status") == "OPEN":
+                raise serializers.ValidationError(f'У пользователя "{usr}" не может быть более 10 открытых обьявлений')
 
         return data
